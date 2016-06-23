@@ -1,0 +1,134 @@
+﻿@model ASP.NET_FinalTermExam.Models.Employees
+
+@{
+    ViewBag.Title = "1102137238 羅馴彥";
+}
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<h2>@ViewBag.Title </h2>
+    @using (Html.BeginForm("Index", "Employees", FormMethod.Post, new { id = "Form1" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div><h3>員工資料查詢</h3></div>
+        <div>
+            <table class="table" style="width:75%">
+                <tr>
+                    <td>
+                        <h5>員工編號</h5>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.EmployeeID)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>員工姓名</h5>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.FirstName)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>職稱</h5>
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(model => model.Title, (List<SelectListItem>)ViewBag.empInfo)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>任職日期</h5>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.HireDate, new { @type = "date" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.HireDate, new { @type = "date" })
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="查詢">
+                        @Html.ActionLink("新增訂單", "./InsertEmployeeIndex")
+                        @Html.ActionLink("返回", "./Index")
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <table class="table">
+                <tr>
+                    <td>
+                        編號
+                    </td>
+                    <td>
+                        姓名
+                    </td>
+                    <td>
+                        職稱
+                    </td>
+                    <td>
+                        任職日期
+                    </td>
+                    <td>
+                        性別
+                    </td>
+                    <td>
+                        年齡
+                    </td>
+                </tr>
+                @foreach (var row in (List<ASP.NET_FinalTermExam.Models.Employees>)ViewBag.empResult)
+                {
+                    <tr>
+                        <td>
+                            @row.EmployeeID
+                        </td>
+                        <td>
+                            @row.FullName
+                        </td>
+                        <td>
+                            @row.Title
+                        </td>
+                        <td>
+                            @row.HireDate
+                        </td>
+                        <td>
+                            @row.Gender
+                        </td>
+                        <td>
+                            @row.BirthDate
+                        </td>
+                        <td>
+                            <a class="deleteButton" href="#">刪除</a>
+                            <input class="hidEmployeeId" type="hidden" value='@row.EmployeeID' />
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+
+<script type="text/javascript">
+
+
+        $(".deleteButton").click(function (e) {
+
+            var tr = $(this).closest('tr')
+            $.ajax({
+                type: "POST",
+                url: "/Employees/DeleteEmployee",
+                data: "EmployeeID=" + $(this).next().val(),
+                dataType: "json",
+                success: function (response) {
+                    $(tr).remove();
+                }
+            });
+            return false;
+        });
+
+</script>
+
+
